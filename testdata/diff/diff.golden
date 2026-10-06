@@ -1,0 +1,27 @@
+         changed version: "1.0.0" -> "2.0.0"
+         changed description.purpose: "Orders placed in the web shop." -> "Orders placed in the web shop and the mobile app."
+BREAKING changed servers[prod].host: "db.example.com" -> "db2.example.com"
+BREAKING changed servers[prod].port: 5432 -> 5433
+BREAKING removed servers[lake]
+         added   servers[staging]
+         changed schema[orders].description: "One row per order." -> "One row per order, including mobile orders."
+BREAKING changed schema[orders].properties[customer_id].required: false -> true
+BREAKING removed schema[orders].properties[status].enum[cancelled]
+         added   schema[orders].properties[status].enum[refunded]
+BREAKING changed schema[orders].properties[amount].logicalType: "number" -> "integer"
+BREAKING changed schema[orders].properties[amount].logicalTypeOptions.maximum: 100000 -> 50000 (tightened)
+         changed schema[orders].properties[note].logicalTypeOptions.maxLength: 500 -> 1000 (loosened)
+         changed schema[orders].properties[shipping].properties[city].description: "" -> "City name."
+BREAKING removed schema[orders].properties[shipping].properties[zip]
+         added   schema[orders].properties[shipping].properties[country]
+BREAKING changed schema[orders].properties[tags].items.logicalType: "string" -> "integer"
+         added   schema[orders].properties[channel]
+BREAKING added   schema[orders].properties[currency] (new required property)
+BREAKING changed schema[orders].quality[row_count].mustBeGreaterThan: 1000 -> 5000 (tightened)
+         changed schema[orders].quality[null_amount].mustBeLessOrEqualTo: 5 -> 10 (loosened)
+BREAKING changed schema[orders].quality[amount_range].mustBeBetween: [10 500] -> [20 500] (tightened)
+BREAKING added   schema[orders].quality[unique_order] (new quality rule)
+BREAKING removed schema[order_lines]
+         changed slaProperties[latency].value: 4 -> 2
+         removed slaProperties[retention]
+BREAKING removed roles[etl]

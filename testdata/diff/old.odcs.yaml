@@ -1,0 +1,93 @@
+apiVersion: v3.2.0
+kind: DataContract
+id: orders-contract
+name: orders
+version: 1.0.0
+status: active
+description:
+  purpose: Orders placed in the web shop.
+servers:
+  - server: prod
+    type: postgres
+    host: db.example.com
+    port: 5432
+    database: shop
+    schema: public
+  - server: lake
+    type: s3
+    location: s3://lake/orders/
+    format: parquet
+schema:
+  - id: orders_tbl
+    name: orders
+    physicalName: orders
+    physicalType: table
+    description: One row per order.
+    properties:
+      - id: order_id
+        name: order_id
+        logicalType: string
+        physicalType: uuid
+        primaryKey: true
+        primaryKeyPosition: 1
+        required: true
+      - name: customer_id
+        logicalType: string
+        required: false
+      - name: status
+        logicalType: string
+        enum:
+          - value: open
+          - value: paid
+          - value: cancelled
+      - name: amount
+        logicalType: number
+        logicalTypeOptions:
+          minimum: 0
+          maximum: 100000
+      - name: note
+        logicalType: string
+        logicalTypeOptions:
+          maxLength: 500
+      - name: shipping
+        logicalType: object
+        properties:
+          - name: city
+            logicalType: string
+          - name: zip
+            logicalType: string
+      - name: tags
+        logicalType: array
+        items:
+          logicalType: string
+    quality:
+      - id: row_count
+        metric: rowCount
+        mustBeGreaterThan: 1000
+      - id: null_amount
+        metric: nullValues
+        arguments:
+          properties: [amount]
+        mustBeLessOrEqualTo: 5
+        unit: percent
+      - id: amount_range
+        type: sql
+        query: SELECT avg(amount) FROM orders
+        mustBeBetween: [10, 500]
+  - name: order_lines
+    physicalType: table
+    properties:
+      - name: line_id
+        logicalType: integer
+slaProperties:
+  - property: latency
+    value: 4
+    unit: h
+  - property: retention
+    value: 3
+    unit: y
+roles:
+  - role: analyst
+    access: read
+  - role: etl
+    access: write

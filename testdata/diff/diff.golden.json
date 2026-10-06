@@ -1,0 +1,180 @@
+[
+  {
+    "kind": "changed",
+    "path": "version",
+    "old": "1.0.0",
+    "new": "2.0.0",
+    "breaking": false
+  },
+  {
+    "kind": "changed",
+    "path": "description.purpose",
+    "old": "Orders placed in the web shop.",
+    "new": "Orders placed in the web shop and the mobile app.",
+    "breaking": false
+  },
+  {
+    "kind": "changed",
+    "path": "servers[prod].host",
+    "old": "db.example.com",
+    "new": "db2.example.com",
+    "breaking": true
+  },
+  {
+    "kind": "changed",
+    "path": "servers[prod].port",
+    "old": 5432,
+    "new": 5433,
+    "breaking": true
+  },
+  {
+    "kind": "removed",
+    "path": "servers[lake]",
+    "breaking": true
+  },
+  {
+    "kind": "added",
+    "path": "servers[staging]",
+    "breaking": false
+  },
+  {
+    "kind": "changed",
+    "path": "schema[orders].description",
+    "old": "One row per order.",
+    "new": "One row per order, including mobile orders.",
+    "breaking": false
+  },
+  {
+    "kind": "changed",
+    "path": "schema[orders].properties[customer_id].required",
+    "old": false,
+    "new": true,
+    "breaking": true
+  },
+  {
+    "kind": "removed",
+    "path": "schema[orders].properties[status].enum[cancelled]",
+    "breaking": true
+  },
+  {
+    "kind": "added",
+    "path": "schema[orders].properties[status].enum[refunded]",
+    "breaking": false
+  },
+  {
+    "kind": "changed",
+    "path": "schema[orders].properties[amount].logicalType",
+    "old": "number",
+    "new": "integer",
+    "breaking": true
+  },
+  {
+    "kind": "changed",
+    "path": "schema[orders].properties[amount].logicalTypeOptions.maximum",
+    "old": 100000,
+    "new": 50000,
+    "breaking": true,
+    "note": "tightened"
+  },
+  {
+    "kind": "changed",
+    "path": "schema[orders].properties[note].logicalTypeOptions.maxLength",
+    "old": 500,
+    "new": 1000,
+    "breaking": false,
+    "note": "loosened"
+  },
+  {
+    "kind": "changed",
+    "path": "schema[orders].properties[shipping].properties[city].description",
+    "old": "",
+    "new": "City name.",
+    "breaking": false
+  },
+  {
+    "kind": "removed",
+    "path": "schema[orders].properties[shipping].properties[zip]",
+    "breaking": true
+  },
+  {
+    "kind": "added",
+    "path": "schema[orders].properties[shipping].properties[country]",
+    "breaking": false
+  },
+  {
+    "kind": "changed",
+    "path": "schema[orders].properties[tags].items.logicalType",
+    "old": "string",
+    "new": "integer",
+    "breaking": true
+  },
+  {
+    "kind": "added",
+    "path": "schema[orders].properties[channel]",
+    "breaking": false
+  },
+  {
+    "kind": "added",
+    "path": "schema[orders].properties[currency]",
+    "breaking": true,
+    "note": "new required property"
+  },
+  {
+    "kind": "changed",
+    "path": "schema[orders].quality[row_count].mustBeGreaterThan",
+    "old": 1000,
+    "new": 5000,
+    "breaking": true,
+    "note": "tightened"
+  },
+  {
+    "kind": "changed",
+    "path": "schema[orders].quality[null_amount].mustBeLessOrEqualTo",
+    "old": 5,
+    "new": 10,
+    "breaking": false,
+    "note": "loosened"
+  },
+  {
+    "kind": "changed",
+    "path": "schema[orders].quality[amount_range].mustBeBetween",
+    "old": [
+      10,
+      500
+    ],
+    "new": [
+      20,
+      500
+    ],
+    "breaking": true,
+    "note": "tightened"
+  },
+  {
+    "kind": "added",
+    "path": "schema[orders].quality[unique_order]",
+    "breaking": true,
+    "note": "new quality rule"
+  },
+  {
+    "kind": "removed",
+    "path": "schema[order_lines]",
+    "breaking": true
+  },
+  {
+    "kind": "changed",
+    "path": "slaProperties[latency].value",
+    "old": 4,
+    "new": 2,
+    "breaking": false
+  },
+  {
+    "kind": "removed",
+    "path": "slaProperties[retention]",
+    "breaking": false
+  },
+  {
+    "kind": "removed",
+    "path": "roles[etl]",
+    "breaking": true
+  }
+]

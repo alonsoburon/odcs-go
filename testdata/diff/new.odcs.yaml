@@ -1,0 +1,97 @@
+apiVersion: v3.2.0
+kind: DataContract
+id: orders-contract
+name: orders
+version: 2.0.0
+status: active
+description:
+  purpose: Orders placed in the web shop and the mobile app.
+servers:
+  - server: prod
+    type: postgres
+    host: db2.example.com
+    port: 5433
+    database: shop
+    schema: public
+  - server: staging
+    type: postgres
+    host: staging.example.com
+    port: 5432
+    database: shop
+    schema: public
+schema:
+  - id: orders_tbl
+    name: orders
+    physicalName: orders
+    physicalType: table
+    description: One row per order, including mobile orders.
+    properties:
+      - id: order_id
+        name: order_id
+        logicalType: string
+        physicalType: uuid
+        primaryKey: true
+        primaryKeyPosition: 1
+        required: true
+      - name: customer_id
+        logicalType: string
+        required: true
+      - name: status
+        logicalType: string
+        enum:
+          - value: open
+          - value: paid
+          - value: refunded
+      - name: amount
+        logicalType: integer
+        logicalTypeOptions:
+          minimum: 0
+          maximum: 50000
+      - name: note
+        logicalType: string
+        logicalTypeOptions:
+          maxLength: 1000
+      - name: shipping
+        logicalType: object
+        properties:
+          - name: city
+            logicalType: string
+            description: City name.
+          - name: country
+            logicalType: string
+      - name: tags
+        logicalType: array
+        items:
+          logicalType: integer
+      - name: channel
+        logicalType: string
+        description: web or mobile.
+      - name: currency
+        logicalType: string
+        required: true
+    quality:
+      - id: row_count
+        metric: rowCount
+        mustBeGreaterThan: 5000
+      - id: null_amount
+        metric: nullValues
+        arguments:
+          properties: [amount]
+        mustBeLessOrEqualTo: 10
+        unit: percent
+      - id: amount_range
+        type: sql
+        query: SELECT avg(amount) FROM orders
+        mustBeBetween: [20, 500]
+      - id: unique_order
+        metric: duplicateValues
+        arguments:
+          properties: [order_id]
+        mustBe: 0
+slaProperties:
+  - property: latency
+    value: 2
+    unit: h
+roles:
+  - role: analyst
+    access: read
