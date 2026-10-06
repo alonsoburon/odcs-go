@@ -1,0 +1,8 @@
+odcs-go
+Copyright 2026 Alonso Burón
+
+This product includes the Open Data Contract Standard JSON Schema
+(schema/odcs-json-schema-v3.2.0.json) and example data contracts
+(testdata/upstream/) from the Bitol project
+(https://github.com/bitol-io/open-data-contract-standard),
+Copyright The Bitol Contributors, licensed under the Apache License 2.0.
